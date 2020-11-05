@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import RedditCard from "./RedditCard";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function RedditSearch() {
 
@@ -45,13 +46,13 @@ export default function RedditSearch() {
                 <form className="form" onSubmit={search}>
                     <label className="label" htmlFor="query">Subreddit - r/</label>
                     <input className="input" type="text" name="query"
-                        placeholder="i.e. programmerhumor"
+                        placeholder="i.e. memes"
                         value={query} onChange={(e) => setQuery(e.target.value)}
                     />
                     <button className="button" type="submit">Search</button>
                 </form>
                 <div className="card-list">
-                    {loading === true ? 'Loading...' : postList.map(post => <RedditCard key={post.score} data={post} />)}
+                    {loading === true ? 'Loading...' : postList.map(post => <RedditCard key={uuidv4()} data={post} />)}
                 </div>
 
             </div>
