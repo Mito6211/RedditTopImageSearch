@@ -44,15 +44,24 @@ export default function RedditSearch() {
             <div className="container">
 
                 <form className="form" onSubmit={search}>
-                    <label className="label" htmlFor="query">Subreddit - r/</label>
-                    <input className="input" type="text" name="query"
+                    <label className="label" htmlFor="query">
+                        Subreddit - r/
+                    </label>
+                    <input
+                        className="input"
+                        type="text"
+                        name="query"
                         placeholder="i.e. memes"
-                        value={query} onChange={(e) => setQuery(e.target.value)}
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
                     />
                     <button className="button" type="submit">Search</button>
                 </form>
                 <div className="card-list">
-                    {loading === true ? 'Loading...' : postList.map(post => <RedditCard key={uuidv4()} data={post} />)}
+                    {loading
+                        ? 'Loading...'
+                        : postList.map(post => <RedditCard key={uuidv4()} data={post} />)
+                    }
                 </div>
 
             </div>
