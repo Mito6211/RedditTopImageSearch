@@ -1,7 +1,8 @@
 import React from "react";
 
-const RedditCard = ({ data }) => {
-  const { title, subreddit_name_prefixed, score, permalink, url } = data;
+const RedditCard = ({
+  data: { title, subreddit_name_prefixed, score, permalink, url },
+}) => {
   const isRedditLink = /https:\/\/i\.redd.it\/.+\.(jpg|gif|png)/.test(url);
 
   return (

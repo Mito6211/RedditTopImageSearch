@@ -7,42 +7,41 @@ export default function RedditSearch() {
   const [loading, setLoading] = useState(false);
   const [postList, setPostList] = useState([]);
 
-  const url = `https://www.reddit.com/r/${query}.json`;
-
   const search = async (e) => {
     e.preventDefault();
 
     try {
       setLoading(true);
-      fetch(url)
-        .then((res) => res.json())
-        .then((posts) => {
-          let { children } = posts.data;
-          let postsArray = [];
+      const res = await fetch(`https://www.reddit.com/r/${query}.json`);
+      const {
+        data: { children },
+      } = await res.json();
 
-          children.forEach((child) => {
-            const {
-              title,
-              subreddit_name_prefixed,
-              score,
-              permalink,
-              url,
-              selftext,
-            } = child.data;
+      let postsArray = [];
 
-            if (selftext.length === 0) {
-              postsArray.push({
-                title,
-                subreddit_name_prefixed,
-                score,
-                permalink,
-                url,
-              });
-            }
+      children.forEach((child) => {
+        const {
+          title,
+          subreddit_name_prefixed,
+          score,
+          permalink,
+          url,
+          selftext,
+        } = child.data;
+
+        if (selftext.length === 0) {
+          postsArray.push({
+            id: uuidv4(),
+            title,
+            subreddit_name_prefixed,
+            score,
+            permalink,
+            url,
           });
+        }
+      });
 
-          setPostList(postsArray);
-        });
+      setPostList(postsArray);
     } catch (err) {
       console.error(err);
     }
@@ -62,7 +61,7 @@ export default function RedditSearch() {
           placeholder="i.e. memes"
           autocomplete="off"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={({ target: { value } }) => setQuery(value)}
         />
         <button className="button" type="submit">
           Search
@@ -71,7 +70,7 @@ export default function RedditSearch() {
       <div className="card-list">
         {loading
           ? "Loading..."
-          : postList.map((post) => <RedditCard key={uuidv4()} data={post} />)}
+          : postList.map((post) => <RedditCard key={post.id} data={post} />)}
       </div>
     </div>
   );
