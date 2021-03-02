@@ -20,7 +20,7 @@ p {
 }
 
 h3 {
-  font-size: 3rem;
+  font-size: 2.25rem;
 }
 
 small {
@@ -72,18 +72,6 @@ small {
   background-color: rgba(0, 0, 0, 0.85);
 }
 
-@media (min-width: 786px) {
-  .form {
-    grid-template-columns: auto 1fr auto;
-    grid-gap: 1rem;
-    align-items: center;
-  }
-
-  .input {
-    margin-bottom: 0;
-  }
-}
-
 .card-list {
   margin-top: 4rem;
 }
@@ -96,14 +84,35 @@ small {
   background-color: white;
 }
 
-.card--title {
-  margin-bottom: 0.5rem;
-  font-size: 3.2rem;
+h3 > a {
+  text-decoration: none;
+  color: #333;
 }
 
 .card--image {
-  margin: 0 auto;
-  /* display: block; */
-  /* width: 50%; */
-  max-height: 75vh;
+  display: block;
+  margin: auto;
+  width: 50%;
+}
+
+@media (min-width: 786px) {
+  .form {
+    grid-template-columns: auto 1fr auto;
+    grid-gap: 1rem;
+    align-items: center;
+  }
+
+  .input {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 786px) {
+  .card--image {
+    width: 100%;
+  }
+
+  .container {
+    padding: 10px;
+  }
 }

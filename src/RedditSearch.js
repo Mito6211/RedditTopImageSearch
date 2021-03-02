@@ -59,7 +59,7 @@ export default function RedditSearch() {
           type="text"
           name="query"
           placeholder="i.e. memes"
-          autocomplete="off"
+          autoComplete="off"
           value={query}
           onChange={({ target: { value } }) => setQuery(value)}
         />
