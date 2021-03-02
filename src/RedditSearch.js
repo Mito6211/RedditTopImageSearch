@@ -5,13 +5,15 @@ import { v4 as uuidv4 } from "uuid";
 export default function RedditSearch() {
   const [query, setQuery] = useState("");
   const [afterToken, setAfterToken] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isLoadingInitialPosts, setIsLoadingInitialPosts] = useState(false);
+  const [isLoadingAdditionalPosts, setIsLoadingAdditionalPosts] = useState(
+    false
+  );
   const [postList, setPostList] = useState([]);
 
   const fetchPosts = async (params = "", prevPosts = []) => {
     const newPosts = [...prevPosts];
     try {
-      setLoading(true);
       const res = await fetch(
         `https://www.reddit.com/r/${query}.json${params}`
       );
@@ -45,7 +47,6 @@ export default function RedditSearch() {
     } catch (err) {
       console.error(err);
     }
-    setLoading(false);
 
     return newPosts;
   };
@@ -53,14 +54,19 @@ export default function RedditSearch() {
   const search = async (e) => {
     e.preventDefault();
 
+    setIsLoadingInitialPosts(true);
     const posts = await fetchPosts();
+    setIsLoadingInitialPosts(false);
+
     setPostList(posts);
   };
 
   const getMorePosts = async () => {
     const afterParam = afterToken.length > 0 ? `?after=${afterToken}` : "";
 
+    setIsLoadingAdditionalPosts(true);
     const posts = await fetchPosts(afterParam, postList);
+    setIsLoadingAdditionalPosts(false);
     setPostList(posts);
   };
 
@@ -83,11 +89,12 @@ export default function RedditSearch() {
           Search
         </button>
       </form>
-      <button onClick={getMorePosts}>Refresh</button>
       <div className="card-list">
-        {loading
+        {isLoadingInitialPosts
           ? "Loading..."
           : postList.map((post) => <RedditCard key={post.id} data={post} />)}
+        <button onClick={getMorePosts}>Refresh</button>
+        {isLoadingAdditionalPosts && "Loading More Posts..."}
       </div>
     </div>
   );
