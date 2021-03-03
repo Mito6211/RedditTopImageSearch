@@ -3,8 +3,21 @@ import RedditCard from "./RedditCard";
 import { v4 as uuidv4 } from "uuid";
 import debounce from "lodash.debounce";
 import { Post } from "../types";
+import {
+  Button,
+  Box,
+  FormControl,
+  FormLabel,
+  InputLeftAddon,
+  InputRightAddon,
+  InputGroup,
+  Input,
+  useMediaQuery,
+} from "@chakra-ui/react";
 
 export default function RedditSearch() {
+  const [isLessThan768px] = useMediaQuery("(max-width: 768px)");
+
   const [query, setQuery] = useState<string>("");
   const [afterToken, setAfterToken] = useState<string>("");
   const [isLoadingInitialPosts, setIsLoadingInitialPosts] = useState<boolean>(
@@ -60,9 +73,7 @@ export default function RedditSearch() {
     []
   );
 
-  const search = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const search = async () => {
     setIsLoadingInitialPosts(true);
 
     const { posts, after } = await fetchPosts(query);
@@ -113,30 +124,36 @@ export default function RedditSearch() {
   }, [getMorePosts, query]);
 
   return (
-    <div className="container">
-      <form className="form" onSubmit={search}>
-        <label className="label" htmlFor="query">
-          Subreddit - r/
-        </label>
-        <input
-          className="input"
-          type="text"
-          name="query"
-          placeholder="i.e. memes"
-          autoComplete="off"
-          value={query}
-          onChange={({ target: { value } }) => setQuery(value)}
-        />
-        <button className="button" type="submit">
-          Search
-        </button>
-      </form>
-      <div className="card-list">
+    <Box maxW="1000px" mx="auto" px={isLessThan768px ? "10px" : "40px"}>
+      <FormControl>
+        <FormLabel mb="0.2rem" htmlFor="query">
+          Subreddit
+        </FormLabel>
+        <InputGroup>
+          <InputLeftAddon children="r/" />
+          <Input
+            mb="1rem"
+            lineHeight="2.5rem"
+            type="text"
+            name="query"
+            placeholder="cats"
+            autoComplete="off"
+            value={query}
+            onChange={({ target: { value } }) => setQuery(value)}
+          />
+          <InputRightAddon p="0px">
+            <Button h="40px" onClick={search}>
+              Search
+            </Button>
+          </InputRightAddon>
+        </InputGroup>
+      </FormControl>
+      <Box mt="30px">
         {isLoadingInitialPosts
           ? "Loading..."
           : postList.map((post) => <RedditCard key={post.id} data={post} />)}
         {isLoadingAdditionalPosts && "Loading More Posts..."}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

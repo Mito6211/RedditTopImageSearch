@@ -1,13 +1,15 @@
 import React from "react";
-import "./main.css";
 import RedditSearch from "./RedditSearch";
+import { ChakraProvider, Heading } from "@chakra-ui/react";
 
 const App: React.FC = () => {
   return (
-    <>
-      <h1 className="title">Reddit Top Image Search</h1>
+    <ChakraProvider>
+      <Heading textAlign="center" my="40px" className="title">
+        Reddit Top Image Search
+      </Heading>
       <RedditSearch />
-    </>
+    </ChakraProvider>
   );
 };
 
