@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import RedditCard from "./RedditCard";
 import { v4 as uuidv4 } from "uuid";
 import debounce from "lodash.debounce";
-import { Post } from "./types";
+import { Post } from "../types";
 
 export default function RedditSearch() {
   const [query, setQuery] = useState<string>("");
