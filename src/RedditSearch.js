@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import RedditCard from "./RedditCard";
 import { v4 as uuidv4 } from "uuid";
+import debounce from "lodash.debounce";
 
 export default function RedditSearch() {
   const [query, setQuery] = useState("");
@@ -69,6 +70,16 @@ export default function RedditSearch() {
     setIsLoadingAdditionalPosts(false);
     setPostList(posts);
   };
+
+  window.onscroll = debounce(async (e) => {
+    const subredditExists = query.length > 0;
+    const isScrolledToBottomOfPage =
+      window.innerHeight + window.pageYOffset >= document.body.offsetHeight;
+
+    if (subredditExists && isScrolledToBottomOfPage) {
+      getMorePosts();
+    }
+  }, 1000);
 
   return (
     <div className="container">
