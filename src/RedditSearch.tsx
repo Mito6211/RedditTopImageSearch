@@ -2,18 +2,22 @@ import React, { useState, useEffect, useCallback } from "react";
 import RedditCard from "./RedditCard";
 import { v4 as uuidv4 } from "uuid";
 import debounce from "lodash.debounce";
+import { Post } from "./types";
 
 export default function RedditSearch() {
-  const [query, setQuery] = useState("");
-  const [afterToken, setAfterToken] = useState("");
-  const [isLoadingInitialPosts, setIsLoadingInitialPosts] = useState(false);
-  const [isLoadingAdditionalPosts, setIsLoadingAdditionalPosts] = useState(
+  const [query, setQuery] = useState<string>("");
+  const [afterToken, setAfterToken] = useState<string>("");
+  const [isLoadingInitialPosts, setIsLoadingInitialPosts] = useState<boolean>(
     false
   );
-  const [postList, setPostList] = useState([]);
+  const [
+    isLoadingAdditionalPosts,
+    setIsLoadingAdditionalPosts,
+  ] = useState<boolean>(false);
+  const [postList, setPostList] = useState<Post[]>([]);
 
   const fetchPosts = useCallback(
-    async (subreddit, params = "", prevPosts = []) => {
+    async (subreddit: string, params: string = "", prevPosts: Post[] = []) => {
       const newPosts = [...prevPosts];
       let aToken = "";
       try {
@@ -22,7 +26,7 @@ export default function RedditSearch() {
         );
         const {
           data: { after: afterT, children },
-        } = await res.json();
+        }: { data: { after: string; children: any[] } } = await res.json();
 
         aToken = afterT;
 
@@ -51,17 +55,17 @@ export default function RedditSearch() {
         console.error(err);
       }
 
-      return [newPosts, aToken];
+      return { posts: newPosts, after: aToken };
     },
     []
   );
 
-  const search = async (e) => {
+  const search = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setIsLoadingInitialPosts(true);
 
-    const [posts, after] = await fetchPosts(query);
+    const { posts, after } = await fetchPosts(query);
     setAfterToken(after);
 
     setIsLoadingInitialPosts(false);
@@ -74,7 +78,7 @@ export default function RedditSearch() {
 
       setIsLoadingAdditionalPosts(true);
 
-      const [posts, after] = await fetchPosts(query, afterParam, postList);
+      const { posts, after } = await fetchPosts(query, afterParam, postList);
       setAfterToken(after);
 
       setIsLoadingAdditionalPosts(false);

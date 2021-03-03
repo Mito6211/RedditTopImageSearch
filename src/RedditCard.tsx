@@ -1,6 +1,10 @@
 import React from "react";
+import { Post } from "./types";
 
-const RedditCard = ({
+type Props = {
+  data: Post;
+};
+const RedditCard: React.FC<Props> = ({
   data: { title, subreddit_name_prefixed, score, permalink, url },
 }) => {
   const isRedditLink = /https:\/\/i\.redd.it\/.+\.(jpg|gif|png)/.test(url);
