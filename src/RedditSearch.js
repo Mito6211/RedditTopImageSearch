@@ -13,17 +13,18 @@ export default function RedditSearch() {
   const [postList, setPostList] = useState([]);
 
   const fetchPosts = useCallback(
-    async (params = "", prevPosts = []) => {
+    async (subreddit, params = "", prevPosts = []) => {
       const newPosts = [...prevPosts];
+      let aToken = "";
       try {
         const res = await fetch(
-          `https://www.reddit.com/r/${query}.json${params}`
+          `https://www.reddit.com/r/${subreddit}.json${params}`
         );
         const {
-          data: { after, children },
+          data: { after: afterT, children },
         } = await res.json();
-        console.log(after);
-        setAfterToken(after);
+
+        aToken = afterT;
 
         children.forEach((child) => {
           const {
@@ -50,18 +51,20 @@ export default function RedditSearch() {
         console.error(err);
       }
 
-      return newPosts;
+      return [newPosts, aToken];
     },
-    [query]
+    []
   );
 
   const search = async (e) => {
     e.preventDefault();
 
     setIsLoadingInitialPosts(true);
-    const posts = await fetchPosts();
-    setIsLoadingInitialPosts(false);
 
+    const [posts, after] = await fetchPosts(query);
+    setAfterToken(after);
+
+    setIsLoadingInitialPosts(false);
     setPostList(posts);
   };
 
@@ -70,16 +73,19 @@ export default function RedditSearch() {
       const afterParam = afterToken.length > 0 ? `?after=${afterToken}` : "";
 
       setIsLoadingAdditionalPosts(true);
-      const posts = await fetchPosts(afterParam, postList);
+
+      const [posts, after] = await fetchPosts(query, afterParam, postList);
+      setAfterToken(after);
+
       setIsLoadingAdditionalPosts(false);
       setPostList(posts);
     } catch {
       console.error("Failed to get more posts");
     }
-  }, [afterToken, fetchPosts, postList]);
+  }, [afterToken, fetchPosts, postList, query]);
 
   useEffect(() => {
-    const refreshDebounce = debounce(async (e) => {
+    const refreshDebounce = debounce(async () => {
       const subredditExists = query.length > 0;
 
       // innerHeight is how tall the window is (constant value if window size doesn't change).
