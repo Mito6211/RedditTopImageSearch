@@ -73,7 +73,8 @@ export default function RedditSearch() {
     []
   );
 
-  const search = async () => {
+  const search = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setIsLoadingInitialPosts(true);
 
     const { posts, after } = await fetchPosts(query);
@@ -125,29 +126,31 @@ export default function RedditSearch() {
 
   return (
     <Box maxW="1000px" mx="auto" px={isLessThan768px ? "10px" : "40px"}>
-      <FormControl>
-        <FormLabel mb="0.2rem" htmlFor="query">
-          Subreddit
-        </FormLabel>
-        <InputGroup>
-          <InputLeftAddon children="r/" />
-          <Input
-            mb="1rem"
-            lineHeight="2.5rem"
-            type="text"
-            name="query"
-            placeholder="cats"
-            autoComplete="off"
-            value={query}
-            onChange={({ target: { value } }) => setQuery(value)}
-          />
-          <InputRightAddon p="0px">
-            <Button h="40px" onClick={search}>
-              Search
-            </Button>
-          </InputRightAddon>
-        </InputGroup>
-      </FormControl>
+      <form onSubmit={search}>
+        <FormControl>
+          <FormLabel mb="0.2rem" htmlFor="query">
+            Subreddit
+          </FormLabel>
+          <InputGroup>
+            <InputLeftAddon children="r/" />
+            <Input
+              mb="1rem"
+              lineHeight="2.5rem"
+              type="text"
+              name="query"
+              placeholder="cats"
+              autoComplete="off"
+              value={query}
+              onChange={({ target: { value } }) => setQuery(value)}
+            />
+            <InputRightAddon p="0px">
+              <Button h="40px" type="submit">
+                Search
+              </Button>
+            </InputRightAddon>
+          </InputGroup>
+        </FormControl>
+      </form>
       <Box mt="30px">
         {isLoadingInitialPosts
           ? "Loading..."
