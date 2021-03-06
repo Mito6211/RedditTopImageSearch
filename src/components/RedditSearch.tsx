@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import RedditCard from "./RedditCard";
-import Settings from "./Settings";
 import { v4 as uuidv4 } from "uuid";
 import debounce from "lodash.debounce";
 import { Post } from "../types";
@@ -15,12 +14,9 @@ import {
   InputGroup,
   Input,
   Spinner,
-  useMediaQuery,
 } from "@chakra-ui/react";
 
 export default function RedditSearch() {
-  const [isLessThan768px] = useMediaQuery("(max-width: 768px)");
-
   const [query, setQuery] = useState<string>("");
   const [afterToken, setAfterToken] = useState<string>("");
   const [isLoadingInitialPosts, setIsLoadingInitialPosts] = useState<boolean>(
@@ -129,13 +125,7 @@ export default function RedditSearch() {
   }, [getMorePosts, query]);
 
   return (
-    <Box
-      maxW="1000px"
-      mx="auto"
-      mb="200px"
-      px={isLessThan768px ? "10px" : "30px"}
-    >
-      <Settings />
+    <Box mb="200px">
       <form onSubmit={search}>
         <FormControl>
           <FormLabel mb="0.2rem" htmlFor="query">

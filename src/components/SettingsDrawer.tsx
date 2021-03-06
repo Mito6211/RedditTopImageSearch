@@ -1,5 +1,5 @@
 import React from "react";
-import { IoMdSettings } from "react-icons/io";
+import { MdSettings } from "react-icons/md";
 import {
   Button,
   useDisclosure,
@@ -20,9 +20,9 @@ const Settings: React.FC = () => {
   return (
     <>
       <Button variant="outline" onClick={onOpen}>
-        <IoMdSettings />
+        <MdSettings />
       </Button>
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+      <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay>
           <DrawerContent>
             <DrawerCloseButton />
@@ -33,7 +33,7 @@ const Settings: React.FC = () => {
             </DrawerBody>
 
             <DrawerFooter>
-              <Button variant="outline" mr={3} onClick={onClose}>
+              <Button variant="outline" onClick={onClose}>
                 Close
               </Button>
             </DrawerFooter>
