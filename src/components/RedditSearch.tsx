@@ -6,12 +6,14 @@ import { Post } from "../types";
 import {
   Button,
   Box,
+  Flex,
   FormControl,
   FormLabel,
   InputLeftAddon,
   InputRightAddon,
   InputGroup,
   Input,
+  Spinner,
   useMediaQuery,
 } from "@chakra-ui/react";
 
@@ -50,19 +52,20 @@ export default function RedditSearch() {
             score,
             permalink,
             url,
-            selftext,
           } = child.data;
 
-          if (selftext.length === 0) {
-            newPosts.push({
-              id: uuidv4(),
-              title,
-              subreddit_name_prefixed,
-              score,
-              permalink,
-              url,
-            });
-          }
+          const postInfo = {
+            title,
+            subreddit_name_prefixed,
+            score,
+            permalink,
+            url,
+          };
+
+          newPosts.push({
+            id: uuidv4(),
+            ...postInfo,
+          });
         });
       } catch (err) {
         console.error(err);
@@ -107,10 +110,10 @@ export default function RedditSearch() {
       // innerHeight is how tall the window is (constant value if window size doesn't change).
       // pageYOffset is how far down the user has scrolled (starts at 0, ends at pageYOffset - innerHeight).
       // offsetHeight is the total height of the page, not just the window height.
-      // -500 is used on the offsetHeight so that it loads before the user hits the bottom.
+      // -800 is used on the offsetHeight so that it loads before the user hits the bottom.
       const isScrolledToBottomOfPage =
         window.innerHeight + window.pageYOffset >=
-        document.body.offsetHeight - 500;
+        document.body.offsetHeight - 800;
 
       if (subredditExists && isScrolledToBottomOfPage) {
         getMorePosts();
@@ -125,7 +128,12 @@ export default function RedditSearch() {
   }, [getMorePosts, query]);
 
   return (
-    <Box maxW="1000px" mx="auto" px={isLessThan768px ? "10px" : "40px"}>
+    <Box
+      maxW="1000px"
+      mx="auto"
+      mb="200px"
+      px={isLessThan768px ? "10px" : "40px"}
+    >
       <form onSubmit={search}>
         <FormControl>
           <FormLabel mb="0.2rem" htmlFor="query">
@@ -152,10 +160,18 @@ export default function RedditSearch() {
         </FormControl>
       </form>
       <Box mt="30px">
-        {isLoadingInitialPosts
-          ? "Loading..."
-          : postList.map((post) => <RedditCard key={post.id} data={post} />)}
-        {isLoadingAdditionalPosts && "Loading More Posts..."}
+        {isLoadingInitialPosts ? (
+          <Flex align="center" justify="center">
+            <Spinner />
+          </Flex>
+        ) : (
+          postList.map((post) => <RedditCard key={post.id} data={post} />)
+        )}
+        {isLoadingAdditionalPosts && (
+          <Flex align="center" justify="center">
+            <Spinner />
+          </Flex>
+        )}
       </Box>
     </Box>
   );
