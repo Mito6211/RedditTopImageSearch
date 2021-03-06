@@ -1,5 +1,4 @@
 import React from "react";
-import { MdSettings } from "react-icons/md";
 import {
   Button,
   useDisclosure,
@@ -10,27 +9,36 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  useColorMode,
 } from "@chakra-ui/react";
+import { IconType } from "react-icons";
+import { MdArrowUpward } from "react-icons/md";
 
-const Settings: React.FC = () => {
+type Props = {
+  Icon: IconType;
+  pos: "left" | "right";
+  title: string;
+};
+
+const Settings: React.FC<Props> = ({
+  Icon = MdArrowUpward,
+  pos = "left",
+  title = "Drawer",
+  ...props
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { toggleColorMode } = useColorMode();
 
   return (
     <>
       <Button variant="outline" onClick={onOpen}>
-        <MdSettings />
+        <Icon />
       </Button>
-      <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+      <Drawer isOpen={isOpen} placement={pos} onClose={onClose}>
         <DrawerOverlay>
           <DrawerContent>
             <DrawerCloseButton />
-            <DrawerHeader>Settings</DrawerHeader>
+            <DrawerHeader>{title}</DrawerHeader>
 
-            <DrawerBody>
-              <Button onClick={toggleColorMode}>Toggle Theme</Button>
-            </DrawerBody>
+            <DrawerBody>{props.children}</DrawerBody>
 
             <DrawerFooter>
               <Button variant="outline" onClick={onClose}>
