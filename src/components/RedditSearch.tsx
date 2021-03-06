@@ -15,6 +15,7 @@ import {
   Input,
   Spinner,
   useMediaQuery,
+  useColorMode,
 } from "@chakra-ui/react";
 
 export default function RedditSearch() {
@@ -127,6 +128,8 @@ export default function RedditSearch() {
     };
   }, [getMorePosts, query]);
 
+  const { colorMode, toggleColorMode } = useColorMode();
+
   return (
     <Box
       maxW="1000px"
@@ -134,6 +137,9 @@ export default function RedditSearch() {
       mb="200px"
       px={isLessThan768px ? "10px" : "40px"}
     >
+      <Button onClick={toggleColorMode}>
+        Toggle {colorMode === "light" ? "Dark" : "Light"}
+      </Button>
       <form onSubmit={search}>
         <FormControl>
           <FormLabel mb="0.2rem" htmlFor="query">

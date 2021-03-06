@@ -1,12 +1,13 @@
 import React from "react";
 import RedditSearch from "./RedditSearch";
 import { ChakraProvider, Heading } from "@chakra-ui/react";
+import theme from "../theme";
 
 const App: React.FC = () => {
   return (
-    <ChakraProvider>
-      <Heading textAlign="center" my="40px" className="title">
-        Reddit Top Image Search
+    <ChakraProvider theme={theme}>
+      <Heading textAlign="center" my="40px">
+        My Feed
       </Heading>
       <RedditSearch />
     </ChakraProvider>

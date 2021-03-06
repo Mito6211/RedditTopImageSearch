@@ -20,7 +20,6 @@ const RedditCard: React.FC<Props> = ({
           mb="2rem"
           borderRadius="10px"
           boxShadow="1px 1px 5px rgba(0, 0, 0, 0.25);"
-          bgColor="white"
         >
           <Text fontSize="sm">
             {score} - {subreddit_name_prefixed}
