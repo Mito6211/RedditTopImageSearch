@@ -144,7 +144,7 @@ export default function RedditSearch() {
               onChange={({ target: { value } }) => setQuery(value)}
             />
             <InputRightAddon p="0px">
-              <Button h="40px" type="submit">
+              <Button h="40px" type="submit" isLoading={isLoadingInitialPosts}>
                 Search
               </Button>
             </InputRightAddon>
@@ -152,13 +152,9 @@ export default function RedditSearch() {
         </FormControl>
       </form>
       <Box mt="30px">
-        {isLoadingInitialPosts ? (
-          <Flex align="center" justify="center">
-            <Spinner />
-          </Flex>
-        ) : (
-          postList.map((post) => <RedditCard key={post.id} data={post} />)
-        )}
+        {postList.map((post) => (
+          <RedditCard key={post.id} data={post} />
+        ))}
         {isLoadingAdditionalPosts && (
           <Flex align="center" justify="center">
             <Spinner />
