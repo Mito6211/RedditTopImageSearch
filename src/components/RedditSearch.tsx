@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import RedditCard from "./RedditCard";
+import Settings from "./Settings";
 import { v4 as uuidv4 } from "uuid";
 import debounce from "lodash.debounce";
 import { Post } from "../types";
@@ -15,7 +16,6 @@ import {
   Input,
   Spinner,
   useMediaQuery,
-  useColorMode,
 } from "@chakra-ui/react";
 
 export default function RedditSearch() {
@@ -128,18 +128,14 @@ export default function RedditSearch() {
     };
   }, [getMorePosts, query]);
 
-  const { colorMode, toggleColorMode } = useColorMode();
-
   return (
     <Box
       maxW="1000px"
       mx="auto"
       mb="200px"
-      px={isLessThan768px ? "10px" : "40px"}
+      px={isLessThan768px ? "10px" : "30px"}
     >
-      <Button onClick={toggleColorMode}>
-        Toggle {colorMode === "light" ? "Dark" : "Light"}
-      </Button>
+      <Settings />
       <form onSubmit={search}>
         <FormControl>
           <FormLabel mb="0.2rem" htmlFor="query">

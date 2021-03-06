@@ -17,12 +17,14 @@ const RedditCard: React.FC<Props> = ({
         <Box
           px={isLessThan768px ? "2rem" : "4rem"}
           py="2rem"
-          mb="2rem"
+          mx="auto"
+          my="1rem"
+          maxW="726px"
           borderRadius="10px"
           boxShadow="1px 1px 5px rgba(0, 0, 0, 0.25);"
         >
           <Text fontSize="sm">
-            {score} - {subreddit_name_prefixed}
+            {subreddit_name_prefixed} - {score}
           </Text>
           <Box>
             <Link
@@ -34,12 +36,7 @@ const RedditCard: React.FC<Props> = ({
               {title}
             </Link>
           </Box>
-          <Image
-            m="auto"
-            w={isLessThan768px ? "100%" : "70%"}
-            src={url}
-            alt={title}
-          />
+          <Image m="15px auto" w="100%" src={url} alt={title} />
         </Box>
       )}
     </>
