@@ -1,4 +1,5 @@
-# Reddit Top Image Search
-Simple React App to display the top 25 recent image posts for a given subreddit.\
-Live demo: https://reddit-top-image-search.netlify.app/
+# MyFeed
+
+A continuous feed for data from various sources. Built using Typescript with React.
+Live demo: https://my-feed.netlify.app/
 ![](demo.gif)
