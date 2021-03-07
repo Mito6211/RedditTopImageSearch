@@ -43,7 +43,11 @@ const sources: SourceArray = [
   },
 ];
 
-const AddDrawer: React.FC = () => {
+type Props = {
+  setData: React.Dispatch<any>;
+};
+
+const AddDrawer: React.FC<Props> = ({ setData }) => {
   const [source, setSource] = useState<Source>("Source");
   const [sourceData, setSourceData] = useState<string>("");
 
@@ -64,7 +68,10 @@ const AddDrawer: React.FC = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            console.log(currentSource.url.replace("{{query}}", sourceData));
+            setData((prev: any) => [
+              ...prev,
+              currentSource.url.replace("{{query}}", sourceData),
+            ]);
           }}
         >
           <FormLabel mb="0.2rem" htmlFor="source-data">
