@@ -12,7 +12,7 @@ import {
 type Props = {
   data: Post;
 };
-const RedditCard: React.FC<Props> = ({
+const SearchCard: React.FC<Props> = ({
   data: { title, subreddit_name_prefixed, score, permalink, url },
 }) => {
   const [isLessThan768px] = useMediaQuery("(max-width: 768px)");
@@ -60,4 +60,4 @@ const RedditCard: React.FC<Props> = ({
   );
 };
 
-export default RedditCard;
+export default SearchCard;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import RedditCard from "./RedditCard";
+import SearchCard from "./SearchCard";
 import { v4 as uuidv4 } from "uuid";
 import debounce from "lodash.debounce";
 import { Post } from "../types";
@@ -9,7 +9,7 @@ import DataContext from "../context";
 type RedditFetch = { data: { after: string; children: any[] } };
 type RequestOptions = { isDefaultPost: boolean };
 
-const RedditSearch: React.FC = () => {
+const Search: React.FC = () => {
   const data = useContext(DataContext);
   const query = "cats";
   const [options, setOptions] = useState<RequestOptions>({
@@ -89,7 +89,7 @@ const RedditSearch: React.FC = () => {
       setIsLoadingPosts(false);
       setPostList(posts);
     } catch {
-      console.error("Failed to get more posts");
+      console.error("Failed to get more Reddit posts");
     }
   }, [afterToken, fetchPosts, postList, query]);
 
@@ -151,7 +151,7 @@ const RedditSearch: React.FC = () => {
       )}
       <Box my="30px">
         {postList.map((post) => (
-          <RedditCard key={post.id} data={post} />
+          <SearchCard key={post.id} data={post} />
         ))}
       </Box>
       {isLoadingPosts && (
@@ -163,4 +163,4 @@ const RedditSearch: React.FC = () => {
   );
 };
 
-export default RedditSearch;
+export default Search;

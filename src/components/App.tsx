@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import RedditSearch from "./RedditSearch";
+import Search from "./Search";
 import Drawer from "./Drawer";
 import {
   Box,
@@ -34,7 +34,7 @@ const App: React.FC = () => {
           </Heading>
           <AddDrawer setData={setData} />
         </Flex>
-        <RedditSearch />
+        <Search />
       </Box>
     </DataContext.Provider>
   );
