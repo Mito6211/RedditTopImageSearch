@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Post } from "../types";
-import { Box, Link, Text, Image, useMediaQuery } from "@chakra-ui/react";
+import {
+  Box,
+  Link,
+  Text,
+  Image,
+  useMediaQuery,
+  Skeleton,
+} from "@chakra-ui/react";
 
 type Props = {
   data: Post;
@@ -10,6 +17,8 @@ const RedditCard: React.FC<Props> = ({
 }) => {
   const [isLessThan768px] = useMediaQuery("(max-width: 768px)");
   const isRedditLink = /https:\/\/i\.redd.it\/.+\.(jpg|gif|png)/.test(url);
+
+  const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false);
 
   return (
     <>
@@ -36,7 +45,15 @@ const RedditCard: React.FC<Props> = ({
               {title}
             </Link>
           </Box>
-          <Image m="15px auto" w="100%" src={url} alt={title} />
+          <Skeleton isLoaded={isImageLoaded} minH={isImageLoaded ? 0 : "500px"}>
+            <Image
+              m="15px auto"
+              w="100%"
+              src={url}
+              alt={title}
+              onLoad={() => setIsImageLoaded(true)}
+            />
+          </Skeleton>
         </Box>
       )}
     </>
