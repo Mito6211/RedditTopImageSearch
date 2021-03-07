@@ -9,13 +9,14 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
+  DrawerProps,
 } from "@chakra-ui/react";
 import { IconType } from "react-icons";
 import { MdArrowUpward } from "react-icons/md";
 
 type Props = {
   Icon: IconType;
-  pos: "left" | "right";
+  pos: DrawerProps["placement"];
   title: string;
 };
 

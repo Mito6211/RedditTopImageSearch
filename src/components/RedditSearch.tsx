@@ -107,10 +107,10 @@ export default function RedditSearch() {
       // innerHeight is how tall the window is (constant value if window size doesn't change).
       // pageYOffset is how far down the user has scrolled (starts at 0, ends at pageYOffset - innerHeight).
       // offsetHeight is the total height of the page, not just the window height.
-      // -800 is used on the offsetHeight so that it loads before the user hits the bottom.
+      // -2500 is used on the offsetHeight so that it loads before the user hits the bottom.
       const isScrolledToBottomOfPage =
         window.innerHeight + window.pageYOffset >=
-        document.body.offsetHeight - 800;
+        document.body.offsetHeight - 2500;
 
       if (subredditExists && isScrolledToBottomOfPage) {
         getMorePosts();
