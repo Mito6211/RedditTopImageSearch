@@ -31,3 +31,8 @@ export const sources: SourceArray = [
     placeholder: "elonmusk",
   },
 ];
+
+export const defaultSourceData: { name: Source; url: string }[] = [
+  { name: "Reddit", url: "https://www.reddit.com/r/photographs.json" },
+  { name: "Reddit", url: "https://www.reddit.com/r/cats.json" },
+];

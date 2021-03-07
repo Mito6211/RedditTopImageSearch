@@ -5,6 +5,7 @@ import debounce from "lodash.debounce";
 import { Post } from "../types";
 import { Box, Flex, Spinner, Tooltip } from "@chakra-ui/react";
 import DataContext from "../context";
+import { defaultSourceData } from "../sources";
 
 type RedditFetch = { data: { after: string; children: any[] } };
 type RequestOptions = { isDefaultPost: boolean };
@@ -20,13 +21,11 @@ const Search: React.FC = () => {
   const [postList, setPostList] = useState<Post[]>([]);
 
   const fetchPosts = useCallback(
-    async (subreddit: string, params: string = "", prevPosts: Post[] = []) => {
+    async (url: string, params: string = "", prevPosts: Post[] = []) => {
       const newPosts = [...prevPosts];
       let aToken = "";
       try {
-        const res = await fetch(
-          `https://www.reddit.com/r/${subreddit}.json${params}`
-        );
+        const res = await fetch(`${url}${params}`);
         if (res.status === 200) {
           const {
             data: { after: afterT, children },
@@ -66,32 +65,45 @@ const Search: React.FC = () => {
     [options]
   );
 
-  const search = async (e: React.FormEvent<HTMLFormElement> | null) => {
+  const search = async (
+    e: React.FormEvent<HTMLFormElement> | null,
+    searchQuery: string
+  ) => {
     e?.preventDefault();
     setIsLoadingPosts(true);
 
-    const { posts, after } = await fetchPosts(query);
+    const { posts, after } = await fetchPosts(searchQuery);
     setAfterToken(after);
 
     setIsLoadingPosts(false);
     setPostList(posts);
+    return posts;
   };
 
-  const getMorePosts = useCallback(async () => {
-    try {
-      const afterParam = afterToken.length > 0 ? `?after=${afterToken}` : "";
+  const getMorePosts = useCallback(
+    async (
+      postsArray: Post[],
+      url: string = `https://www.reddit.com/r/${query}.json`
+    ) => {
+      let newPosts = postsArray;
+      try {
+        const afterParam = afterToken.length > 0 ? `?after=${afterToken}` : "";
 
-      setIsLoadingPosts(true);
+        setIsLoadingPosts(true);
 
-      const { posts, after } = await fetchPosts(query, afterParam, postList);
-      setAfterToken(after);
+        const { posts, after } = await fetchPosts(url, afterParam, postsArray);
+        newPosts = posts;
+        setAfterToken(after);
 
-      setIsLoadingPosts(false);
-      setPostList(posts);
-    } catch {
-      console.error("Failed to get more Reddit posts");
-    }
-  }, [afterToken, fetchPosts, postList, query]);
+        setIsLoadingPosts(false);
+        setPostList(posts);
+      } catch {
+        console.error("Failed to get more Reddit posts");
+      }
+      return newPosts;
+    },
+    [afterToken, fetchPosts]
+  );
 
   useEffect(() => {
     const refreshDebounce = debounce(async () => {
@@ -106,7 +118,7 @@ const Search: React.FC = () => {
         document.body.offsetHeight - 2500;
 
       if (subredditExists && isScrolledToBottomOfPage) {
-        getMorePosts();
+        getMorePosts(postList);
       }
     }, 1000);
 
@@ -115,15 +127,35 @@ const Search: React.FC = () => {
     return () => {
       document.removeEventListener("scroll", refreshDebounce);
     };
-  }, [getMorePosts, query]);
+  }, [getMorePosts, postList, query]);
 
   useEffect(() => {
+    let fiftyMsDelayID: NodeJS.Timeout = setInterval(() => null, 0);
+    const timeoutIDs: NodeJS.Timeout[] = [];
     if (data.length === 0) {
       setOptions({ isDefaultPost: true });
-      setTimeout(() => search(null), 50);
+      let prevPosts: Post[] = [];
+      fiftyMsDelayID = setTimeout(async () => {
+        const newPosts = await search(null, defaultSourceData[0].url);
+        prevPosts = newPosts;
+        defaultSourceData.forEach((source, idx) => {
+          idx > 0 &&
+            timeoutIDs.push(
+              setTimeout(async () => {
+                const morePosts = await getMorePosts(prevPosts, source.url);
+                prevPosts = morePosts;
+              }, idx * 500)
+            );
+        });
+      }, 50);
     } else {
       setOptions({ isDefaultPost: false });
     }
+
+    return () => {
+      clearTimeout(fiftyMsDelayID);
+      timeoutIDs.forEach((timeout) => clearTimeout(timeout));
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
