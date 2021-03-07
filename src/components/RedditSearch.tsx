@@ -7,10 +7,14 @@ import { Box, Flex, Spinner, Tooltip } from "@chakra-ui/react";
 import DataContext from "../context";
 
 type RedditFetch = { data: { after: string; children: any[] } };
+type RequestOptions = { isDefaultPost: boolean };
 
 const RedditSearch: React.FC = () => {
   const data = useContext(DataContext);
   const query = "cats";
+  const [options, setOptions] = useState<RequestOptions>({
+    isDefaultPost: true,
+  });
   const [afterToken, setAfterToken] = useState<string>("");
   const [isLoadingPosts, setIsLoadingPosts] = useState<boolean>(false);
   const [postList, setPostList] = useState<Post[]>([]);
@@ -29,7 +33,6 @@ const RedditSearch: React.FC = () => {
           }: RedditFetch = await res.json();
 
           aToken = afterT;
-
           children.forEach((child) => {
             const {
               title,
@@ -49,6 +52,7 @@ const RedditSearch: React.FC = () => {
 
             newPosts.push({
               id: uuidv4(),
+              ...options,
               ...postInfo,
             });
           });
@@ -59,7 +63,7 @@ const RedditSearch: React.FC = () => {
 
       return { posts: newPosts, after: aToken };
     },
-    []
+    [options]
   );
 
   const search = async (e: React.FormEvent<HTMLFormElement> | null) => {
@@ -114,9 +118,26 @@ const RedditSearch: React.FC = () => {
   }, [getMorePosts, query]);
 
   useEffect(() => {
-    data.length === 0 && search(null);
+    if (data.length === 0) {
+      setOptions({ isDefaultPost: true });
+      setTimeout(() => search(null), 50);
+    } else {
+      setOptions({ isDefaultPost: false });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      const prevPosts = [...postList];
+      const updatedPosts = prevPosts.filter(
+        (post) => post.isDefaultPost === false
+      );
+      if (prevPosts.length !== updatedPosts.length) {
+        setPostList(updatedPosts);
+      }
+    }
+  }, [data.length, postList]);
 
   return (
     <Box mb="100px">
