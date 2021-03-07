@@ -177,7 +177,7 @@ const Search: React.FC = () => {
         <Flex justify="center" align="center">
           <Tooltip label="Default posts will be removed after you add a source">
             Add a source by tapping the plus in the top right corner! (default
-            is r/cats)
+            is r/cats & r/photographs)
           </Tooltip>
         </Flex>
       )}
