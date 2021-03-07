@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import { MdAdd } from "react-icons/md";
-import { Input, InputGroup, InputLeftAddon, Select } from "@chakra-ui/react";
+import {
+  Button,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+  Select,
+} from "@chakra-ui/react";
 import Drawer from "./Drawer";
 
 type Source = "Source" | "Reddit" | "Twitter";
 type SourceArray = {
   name: Source;
+  url: string;
   textBeforeInput: string | null;
   placeholder: string;
 }[];
@@ -13,16 +20,19 @@ type SourceArray = {
 const sources: SourceArray = [
   {
     name: "Source",
+    url: "",
     textBeforeInput: null,
     placeholder: "",
   },
   {
     name: "Reddit",
+    url: "https://www.reddit.com/r/{{query}}.json",
     textBeforeInput: "r/",
     placeholder: "Subreddit",
   },
   {
     name: "Twitter",
+    url: "https://twitter.com/{{query}}",
     textBeforeInput: null,
     placeholder: "Profile",
   },
@@ -33,7 +43,6 @@ const AddDrawer: React.FC = () => {
   const [sourceData, setSourceData] = useState<string>("");
 
   const currentSource = sources.find((s) => s.name === source)!;
-  console.log(currentSource);
 
   const handleSourceChange = (e: any) => {
     setSource(e.target.value);
@@ -47,16 +56,29 @@ const AddDrawer: React.FC = () => {
         <option>Twitter</option>
       </Select>
       {currentSource.placeholder.length > 0 && (
-        <InputGroup>
-          {currentSource.textBeforeInput !== null && (
-            <InputLeftAddon children={currentSource.textBeforeInput} />
-          )}
-          <Input
-            placeholder={currentSource.placeholder}
-            value={sourceData}
-            onChange={(e) => setSourceData(e.target.value)}
-          />
-        </InputGroup>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            console.log({
+              source,
+              url: currentSource.url.replace("{{query}}", sourceData),
+            });
+          }}
+        >
+          <InputGroup mb={3}>
+            {currentSource.textBeforeInput !== null && (
+              <InputLeftAddon children={currentSource.textBeforeInput} />
+            )}
+            <Input
+              placeholder={currentSource.placeholder}
+              value={sourceData}
+              onChange={(e) => setSourceData(e.target.value)}
+            />
+          </InputGroup>
+          <Button type="submit" w="100%">
+            Add
+          </Button>
+        </form>
       )}
     </Drawer>
   );
