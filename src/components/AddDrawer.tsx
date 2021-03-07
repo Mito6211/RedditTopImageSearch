@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MdAdd } from "react-icons/md";
 import {
   Button,
+  FormLabel,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -13,7 +14,8 @@ type Source = "Source" | "Reddit" | "Twitter";
 type SourceArray = {
   name: Source;
   url: string;
-  textBeforeInput: string | null;
+  textBeforeInput: string;
+  label: string;
   placeholder: string;
 }[];
 
@@ -21,20 +23,23 @@ const sources: SourceArray = [
   {
     name: "Source",
     url: "",
-    textBeforeInput: null,
+    textBeforeInput: "",
+    label: "",
     placeholder: "",
   },
   {
     name: "Reddit",
     url: "https://www.reddit.com/r/{{query}}.json",
     textBeforeInput: "r/",
-    placeholder: "Subreddit",
+    label: "Subreddit",
+    placeholder: "cats",
   },
   {
     name: "Twitter",
     url: "https://twitter.com/{{query}}",
-    textBeforeInput: null,
-    placeholder: "Profile",
+    textBeforeInput: "@",
+    label: "Profile Name",
+    placeholder: "elonmusk",
   },
 ];
 
@@ -55,18 +60,18 @@ const AddDrawer: React.FC = () => {
         <option>Reddit</option>
         <option>Twitter</option>
       </Select>
-      {currentSource.placeholder.length > 0 && (
+      {currentSource.label.length > 0 && (
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            console.log({
-              source,
-              url: currentSource.url.replace("{{query}}", sourceData),
-            });
+            console.log(currentSource.url.replace("{{query}}", sourceData));
           }}
         >
-          <InputGroup mb={3}>
-            {currentSource.textBeforeInput !== null && (
+          <FormLabel mb="0.2rem" htmlFor="source-data">
+            {currentSource.label}
+          </FormLabel>
+          <InputGroup id="source-data" mb={3}>
+            {currentSource.textBeforeInput.length > 0 && (
               <InputLeftAddon children={currentSource.textBeforeInput} />
             )}
             <Input
