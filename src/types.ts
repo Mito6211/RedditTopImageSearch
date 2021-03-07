@@ -7,3 +7,5 @@ export type Post = {
   title: string;
   url: string;
 };
+
+export type Source = "Source" | "Reddit" | "Twitter";

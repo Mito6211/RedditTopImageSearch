@@ -9,39 +9,8 @@ import {
   Select,
 } from "@chakra-ui/react";
 import Drawer from "./Drawer";
-
-type Source = "Source" | "Reddit" | "Twitter";
-type SourceArray = {
-  name: Source;
-  url: string;
-  textBeforeInput: string;
-  label: string;
-  placeholder: string;
-}[];
-
-const sources: SourceArray = [
-  {
-    name: "Source",
-    url: "",
-    textBeforeInput: "",
-    label: "",
-    placeholder: "",
-  },
-  {
-    name: "Reddit",
-    url: "https://www.reddit.com/r/{{query}}.json",
-    textBeforeInput: "r/",
-    label: "Subreddit",
-    placeholder: "cats",
-  },
-  {
-    name: "Twitter",
-    url: "https://twitter.com/{{query}}",
-    textBeforeInput: "@",
-    label: "Profile Name",
-    placeholder: "elonmusk",
-  },
-];
+import { Source } from "../types";
+import { sources } from "../sources";
 
 type Props = {
   setData: React.Dispatch<any>;
