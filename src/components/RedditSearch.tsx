@@ -1,33 +1,18 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import RedditCard from "./RedditCard";
 import { v4 as uuidv4 } from "uuid";
 import debounce from "lodash.debounce";
 import { Post } from "../types";
-import {
-  Button,
-  Box,
-  Flex,
-  FormControl,
-  FormLabel,
-  InputLeftAddon,
-  InputRightAddon,
-  InputGroup,
-  Input,
-  Spinner,
-} from "@chakra-ui/react";
+import { Box, Flex, Spinner, Tooltip } from "@chakra-ui/react";
+import DataContext from "../context";
 
 type RedditFetch = { data: { after: string; children: any[] } };
 
-export default function RedditSearch() {
-  const [query, setQuery] = useState<string>("");
+const RedditSearch: React.FC = () => {
+  const data = useContext(DataContext);
+  const query = "cats";
   const [afterToken, setAfterToken] = useState<string>("");
-  const [isLoadingInitialPosts, setIsLoadingInitialPosts] = useState<boolean>(
-    false
-  );
-  const [
-    isLoadingAdditionalPosts,
-    setIsLoadingAdditionalPosts,
-  ] = useState<boolean>(false);
+  const [isLoadingPosts, setIsLoadingPosts] = useState<boolean>(false);
   const [postList, setPostList] = useState<Post[]>([]);
 
   const fetchPosts = useCallback(
@@ -77,14 +62,14 @@ export default function RedditSearch() {
     []
   );
 
-  const search = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoadingInitialPosts(true);
+  const search = async (e: React.FormEvent<HTMLFormElement> | null) => {
+    e?.preventDefault();
+    setIsLoadingPosts(true);
 
     const { posts, after } = await fetchPosts(query);
     setAfterToken(after);
 
-    setIsLoadingInitialPosts(false);
+    setIsLoadingPosts(false);
     setPostList(posts);
   };
 
@@ -92,12 +77,12 @@ export default function RedditSearch() {
     try {
       const afterParam = afterToken.length > 0 ? `?after=${afterToken}` : "";
 
-      setIsLoadingAdditionalPosts(true);
+      setIsLoadingPosts(true);
 
       const { posts, after } = await fetchPosts(query, afterParam, postList);
       setAfterToken(after);
 
-      setIsLoadingAdditionalPosts(false);
+      setIsLoadingPosts(false);
       setPostList(posts);
     } catch {
       console.error("Failed to get more posts");
@@ -128,43 +113,33 @@ export default function RedditSearch() {
     };
   }, [getMorePosts, query]);
 
+  useEffect(() => {
+    data.length === 0 && search(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <Box mb="200px">
-      <form onSubmit={search}>
-        <FormControl>
-          <FormLabel mb="0.2rem" htmlFor="query">
-            Subreddit
-          </FormLabel>
-          <InputGroup>
-            <InputLeftAddon children="r/" />
-            <Input
-              mb="1rem"
-              lineHeight="2.5rem"
-              type="text"
-              name="query"
-              placeholder="cats"
-              autoComplete="off"
-              value={query}
-              onChange={({ target: { value } }) => setQuery(value)}
-            />
-            <InputRightAddon p="0px">
-              <Button h="40px" type="submit" isLoading={isLoadingInitialPosts}>
-                Search
-              </Button>
-            </InputRightAddon>
-          </InputGroup>
-        </FormControl>
-      </form>
-      <Box mt="30px">
+    <Box mb="100px">
+      {data.length === 0 && (
+        <Flex justify="center" align="center">
+          <Tooltip label="Default posts will be removed after you add a source">
+            Add a source by tapping the plus in the top right corner! (default
+            is r/cats)
+          </Tooltip>
+        </Flex>
+      )}
+      <Box my="30px">
         {postList.map((post) => (
           <RedditCard key={post.id} data={post} />
         ))}
-        {isLoadingAdditionalPosts && (
-          <Flex align="center" justify="center">
-            <Spinner />
-          </Flex>
-        )}
       </Box>
+      {isLoadingPosts && (
+        <Flex justify="center" align="center" my="30px">
+          <Spinner size="lg" />
+        </Flex>
+      )}
     </Box>
   );
-}
+};
+
+export default RedditSearch;

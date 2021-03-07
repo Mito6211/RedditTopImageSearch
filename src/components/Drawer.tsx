@@ -15,7 +15,7 @@ import { IconType } from "react-icons";
 import { MdArrowUpward } from "react-icons/md";
 
 type Props = {
-  Icon: IconType;
+  Icon?: IconType;
   pos: DrawerProps["placement"];
   title: string;
 };
