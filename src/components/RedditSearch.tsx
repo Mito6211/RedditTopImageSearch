@@ -16,6 +16,8 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 
+type RedditFetch = { data: { after: string; children: any[] } };
+
 export default function RedditSearch() {
   const [query, setQuery] = useState<string>("");
   const [afterToken, setAfterToken] = useState<string>("");
@@ -36,34 +38,36 @@ export default function RedditSearch() {
         const res = await fetch(
           `https://www.reddit.com/r/${subreddit}.json${params}`
         );
-        const {
-          data: { after: afterT, children },
-        }: { data: { after: string; children: any[] } } = await res.json();
-
-        aToken = afterT;
-
-        children.forEach((child) => {
+        if (res.status === 200) {
           const {
-            title,
-            subreddit_name_prefixed,
-            score,
-            permalink,
-            url,
-          } = child.data;
+            data: { after: afterT, children },
+          }: RedditFetch = await res.json();
 
-          const postInfo = {
-            title,
-            subreddit_name_prefixed,
-            score,
-            permalink,
-            url,
-          };
+          aToken = afterT;
 
-          newPosts.push({
-            id: uuidv4(),
-            ...postInfo,
+          children.forEach((child) => {
+            const {
+              title,
+              subreddit_name_prefixed,
+              score,
+              permalink,
+              url,
+            } = child.data;
+
+            const postInfo = {
+              title,
+              subreddit_name_prefixed,
+              score,
+              permalink,
+              url,
+            };
+
+            newPosts.push({
+              id: uuidv4(),
+              ...postInfo,
+            });
           });
-        });
+        }
       } catch (err) {
         console.error(err);
       }

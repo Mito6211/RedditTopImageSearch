@@ -9,7 +9,8 @@ import {
   Button,
   useColorMode,
 } from "@chakra-ui/react";
-import { MdAdd, MdSettings } from "react-icons/md";
+import { MdSettings } from "react-icons/md";
+import AddDrawer from "./AddDrawer";
 
 const App: React.FC = () => {
   const [isLessThan768px] = useMediaQuery("(max-width: 768px)");
@@ -24,9 +25,7 @@ const App: React.FC = () => {
         <Heading textAlign="center" my="40px">
           My Feed
         </Heading>
-        <Drawer Icon={MdAdd} pos="right" title="Add Content">
-          Placeholder Text
-        </Drawer>
+        <AddDrawer />
       </Flex>
       <RedditSearch />
     </Box>
